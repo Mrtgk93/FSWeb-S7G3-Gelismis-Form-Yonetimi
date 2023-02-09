@@ -24,6 +24,7 @@ const formSchema = Yup.object().shape({
 
 export default function Form(props) {
   const { handleSubmitCallBack } = props;
+  const [kullanicilar, setKullanicilar] = useState([]);
   const [uye, setUye] = useState({
     isim: "",
     soyisim: "",
@@ -80,8 +81,8 @@ export default function Form(props) {
     axios
       .post("https://reqres.in/api/users", uye)
       .then((res) => {
+        setKullanicilar([...kullanicilar, res.data]);
         // setPost(res.data); // get just the form data from the REST api
-        console.log("success", res);
       })
       .catch((err) => console.log(err.response));
     return handleSubmitCallBack(uye);
@@ -99,6 +100,7 @@ export default function Form(props) {
                 type="text"
                 id="fisim"
                 name="isim"
+                data-cy="dataisim"
                 value={uye.isim}
               />
             </label>
@@ -116,15 +118,18 @@ export default function Form(props) {
               />
             </label>
           </p>
-          {errors.soyisim !== "" && <div>{errors.soyisim}</div>}
+          {errors.soyisim !== "" && (
+            <div>{errors.soyisim /* su yazımı kontrol et */}</div>
+          )}
           <p>
             <label>
               e-mail:
               <input
                 onChange={handleChange}
-                type="text"
+                type="email"
                 id="femail"
                 name="email"
+                data-cy="dataemail"
                 value={uye.email}
               />
             </label>
@@ -138,23 +143,29 @@ export default function Form(props) {
                 type="password"
                 id="fsifre"
                 name="sifre"
+                data-cy="datasifre"
                 value={uye.sifre}
               />
             </label>
           </p>
           {errors.sifre !== "" && <div>{errors.sifre}</div>}
           <p className="form-line">
-            <input
-              type="checkbox"
-              id="kosul"
-              name="kosulKabul"
-              onChange={handleChange}
-              checked={uye.kosulKabul}
-            />
-            <label htmlFor="kosul">Koşulları kabul ediyorum</label>
+            <label htmlFor="kosul">
+              Koşulları kabul ediyorum
+              <input
+                type="checkbox"
+                id="kosul"
+                name="kosulKabul"
+                data-cy="datacheckbox"
+                onChange={handleChange}
+                checked={uye.kosulKabul}
+              />
+            </label>
           </p>
           {errors.kosulKabul !== "" && <div>{errors.kosulKabul}</div>}
-          <button type="submit">Gönder</button>
+          <button type="submit" data-cy="datasubmit">
+            Gönder
+          </button>
         </fieldset>
       </form>
     </div>
